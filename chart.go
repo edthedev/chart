@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"io/ioutil"
 	"strconv"
 	"strings"
-
 	"github.com/guptarohit/asciigraph"
 )
 
@@ -35,20 +35,37 @@ func GetLatest(datastring string, max int) (res []string) {
 	return strData[len(strData)-max:]
 }
 
+func GetChartData(fileName string, envVar string, max int) (result []string) {
+
+	// Set some default data.
+	datastring := "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
+	datastring = datastring + "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
+	datastring = datastring + "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
+
+	// Pull data from a file
+	if(fileName!=""){ 
+		dat, err := ioutil.ReadFile(fileName)
+		if err != nil { panic(err) }
+		datastring = string(dat)
+	}
+
+	// Pull data from an environment variable.
+	if(envVar!="") {
+		datastring = os.Getenv(envVar)
+	}
+
+	// Return the allowed amount of data.
+	return GetLatest(datastring, max)
+}
+
 func main() {
-	envVar := flag.String("var", "chart", "Environment variable to chart from.")
+	envVar := flag.String("var", "", "Environment variable to chart from.")
+	fileName := flag.String("file", "", "File to chart from.")
 	flag.Parse()
 
 	data := []float64{0, 0}
 
-	// Pull data from the environment variable.
-	datastring := os.Getenv(*envVar)
-	if datastring == "" {
-		datastring = "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
-		datastring = datastring + "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
-		datastring = datastring + "|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15"
-	}
-	strData := GetLatest(datastring, 73)
+	strData := GetChartData(*fileName, *envVar, 73)
 
 	// Turn it into numbers.
 	var item string
@@ -61,9 +78,8 @@ func main() {
 		}
 		data = append(data, dataItem)
 	}
-	// fmt.Println(data)
 
-	// Clean it for display size.
+	// Scale the chart for available space.
 	sizedData := []float64{}
 	var scaleFactor float64 = 1
 	if bigItem > 50 {
