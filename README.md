@@ -32,3 +32,9 @@ Chart scale is 2
  1.00 ┤   ╭─╯
  0.00 ┼───╯
  ```
+
+## Installation
+
+```sh
+go install github.com/edthedev/chart@latest
+```
