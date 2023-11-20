@@ -60,7 +60,7 @@ func GetChartData(fileName string, envVar string, max int) (result []string) {
 
 func main() {
 	envVar := flag.String("var", "chart", "Environment variable to chart from. (default: chart)")
-	fileName := flag.String("file", "chart.csv", "File to chart from. (default: chart.csv)")
+	fileName := flag.String("file", "chart.dat", "File to chart from. (default: chart.dat)")
 	flag.Parse()
 
 	data := []float64{0, 0}
